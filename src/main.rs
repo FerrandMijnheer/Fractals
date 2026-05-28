@@ -258,8 +258,7 @@ impl State {
                 return Ok(());
             }
             wgpu::CurrentSurfaceTexture::Lost => {
-                // You could recreate the devices and all resources
-                // created with it here, but we'll just bail
+                // self.resize(self.config.width, self.config.height);
                 anyhow::bail!("Lost device");
             }
         };

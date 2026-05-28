@@ -48,9 +48,10 @@ fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
 
     let t = f32(i) / f32(max_iterations);
     let transition_speed = 30.0;
+    let offset: f32 = 1; //offset so the fractal starts with a dark colour black
     let r: f32 = 0;
     let g: f32 = 0;
-    let b = sin(t * transition_speed) * 0.5 + 0.5;
+    let b = sin((t + offset) * transition_speed) * 0.5 + 0.5;
 
     return vec4<f32>(r, g, b, 1.0);
 }
