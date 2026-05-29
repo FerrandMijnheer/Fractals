@@ -1,5 +1,6 @@
 use std::{iter, sync::Arc};
-
+use std::io::{stdin, stdout, Read, Write};
+use anyhow::Error;
 use winit::{
     application::ApplicationHandler,
     event::*,
@@ -495,7 +496,7 @@ pub fn run() -> anyhow::Result<()> {
     #[cfg(target_arch = "wasm32")]
     {
         let app = App::new(&event_loop);
-        event_loop.spawn_app(app);
+        event_loop.run_app(&mut app)?;
     }
 
     Ok(())
@@ -510,19 +511,15 @@ pub fn run_web() -> Result<(), wasm_bindgen::JsValue> {
     Ok(())
 }
 
-fn pause() {
-    let mut stdin = io::stdin();
-    let mut stdout = io::stdout();
+fn handle_error(e:Error) {
+    let mut stdout = stdout();
 
-    // We want the cursor to stay at the end of the line, so we print without a newline and flush manually.
-    write!(stdout, "Press any key to continue...").unwrap();
+    stdout.write_fmt(format_args!("Error: {}", e)).ok();
+    stdout.write(b"Press Enter to continue...").unwrap();
     stdout.flush().unwrap();
-
-    // Read a single byte and discard
-    let _ = stdin.read(&mut [0u8]).unwrap();
+    stdin().read(&mut [0]).unwrap();
 }
 
 fn main() {
-    run().unwrap();
-    pause();
+    run().unwrap_or_else(|e| handle_error(e));
 }

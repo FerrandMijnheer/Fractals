@@ -28,14 +28,15 @@ fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VertexOutput {
 
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
-    let corrected_uv = vec2<f32>(in.uv.x * camera.aspect_ratio, in.uv.y);
-    let c = corrected_uv * camera.zoom + camera.pan;
+    let aspect_ratio_corrected_uv = vec2<f32>(in.uv.x * camera.aspect_ratio, in.uv.y);
+    let c = aspect_ratio_corrected_uv * camera.zoom + camera.pan;
 
     var z = vec2<f32>(0.0, 0.0);
     let max_iterations = 256u;
     var i = 0u;
+    let z_size_limit = 4.0; // 2.0^2 = 4.0
 
-    while (i < max_iterations && dot(z, z) < 4.0) {
+    while (i < max_iterations && dot(z, z) < z_size_limit) {
         let next_x = z.x * z.x - z.y * z.y + c.x;
         let next_y = 2.0 * z.x * z.y + c.y;
         z = vec2<f32>(next_x, next_y);
