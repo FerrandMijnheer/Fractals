@@ -1,9 +1,9 @@
-struct VertexOutput {
+struct VertexOutput { // Dit zijn de posities van de vertecies die we bewerken in de vertex shader
     @builtin(position) position: vec4<f32>,
     @location(0) uv: vec2<f32>,
 }
 
-struct CameraUniform {
+struct CameraUniform { // Dit is de data die wij krijgen vanaf de cpu
     pan: vec2<f32>,
     zoom: f32,
     aspect_ratio: f32,
@@ -13,9 +13,9 @@ struct CameraUniform {
 var<uniform> camera: CameraUniform;
 
 @vertex
-fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VertexOutput {
-    var out: VertexOutput;
-    var pos = array<vec2<f32>, 3>(
+fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VertexOutput {   // Dit is de vertex shader
+    var out: VertexOutput;                                                  // Dit stuk code zorgt ervoor dat het hele
+    var pos = array<vec2<f32>, 3>(                                          // scherm is gevuld met de shader
         vec2<f32>(-1.0, -1.0),
         vec2<f32>( 3.0, -1.0),
         vec2<f32>(-1.0,  3.0)
@@ -27,7 +27,7 @@ fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> VertexOutput {
 }
 
 @fragment
-fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
+fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {                // Dit is de fragment shader, hierover lees je meer in het word document
     let aspect_ratio_corrected_uv = vec2<f32>(in.uv.x * camera.aspect_ratio, in.uv.y);
     let c = aspect_ratio_corrected_uv * camera.zoom + camera.pan;
 
