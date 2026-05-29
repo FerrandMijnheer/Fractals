@@ -66,6 +66,23 @@ impl State {
             })
             .await?;
 
+        let adapter_info = adapter.get_info();
+
+        let backend_name = match adapter_info.backend {
+            wgpu::Backend::Vulkan => "Vulkan",
+            wgpu::Backend::Dx12 => "DX12",
+            wgpu::Backend::Metal => "Metal",
+            wgpu::Backend::Gl => "OpenGL",
+            wgpu::Backend::BrowserWebGpu => "WebGPU",
+            _ => "Unknown",
+        };
+
+        window.set_title(&format!(
+            "Mandelbrot fractal [{} - {}]",
+            backend_name,
+            adapter_info.name
+        ));
+
         let (device, queue) = adapter
             .request_device(&wgpu::DeviceDescriptor {
                 label: None,
